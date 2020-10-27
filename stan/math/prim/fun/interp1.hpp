@@ -11,7 +11,7 @@ namespace stan {
         {
             using stan::math::index_type_t;
 
-            std::vector<double> yVals(xVector.size());
+            std::vector<double> yVals;
             int size_x = xVector.size();
             int size_xData = xData.size();
 
