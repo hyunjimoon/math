@@ -7,78 +7,30 @@ using namespace std;
 namespace stan {
     namespace math {
         template <typename T>
-        inline std::vector<double> interp1(const std::vector<T>& xData, const std::vector<T>& yData, const std::vector<T>& xVector)
+        inline std::vector<double> interp1(const std::vector<T>& xData, const std::vector<T>& yData, const std::vector<T>& xTest)
         {
             using stan::math::index_type_t;
-
-            std::vector<double> yVals;
-            int size_x = xVector.size();
             int size_xData = xData.size();
+            std::vector<double> dydx(xData.size());
+            int size_x = xTest.size();
+            std::vector<double> yVals(xTest.size());
 
-            for(int j=0; j < size_x; j++) {
-
-                double x = xVector[j];
-                int i = 0;
-                if (x >= xVector[size_xData - 2])                 // special case: beyond right end
-                {
-                    i = size_xData - 2;
-                } else {
-                    while (x > xVector[i + 1])
-                        i++;                                   // find left end of interval for interpolation
-                }
-                double xL = xVector[i], yL = yData[i], xR = xVector[i + 1], yR = yData[i + 1]; // points on either side (unless beyond ends)
-                if (x < xL) yR = yL;                                                 // if beyond ends of array
-                if (x > xR) yL = yR;
-                double dydx = (yR - yL) / (xR - xL);                               // gradient
-                yVals[j] = yL + dydx * (x - xL);
+            for (int i = 0; i < size_xData; i++){
+                dydx[i] = (yData[i+1] -  yData[i]) / (xData[i+1] - xData[i]);
             }
-            return yVals;                                         // linear interpolation
+            for(int j = 0; j <size_x; j ++){
+                double x = xTest[j];
+                int i= 0;
+                while(x > xData[i]){
+                    i++;
+                }
+                if(x < xData[0]){yVals[j] = yData[0];}
+                else if (x > xData[size_xData-1]){yVals[j] = yData[size_xData-1];}
+                else{yVals[j] = yData[i-1] + dydx[i-1] * (x - xData[i-1]);}
+            }
+            return yVals;
         }
-    }  // namespace math
-}  // namespace stan
+    }
+}
 
 #endif
-/*
-
-#ifndef STAN_MATH_PRIM_FUN_INTERP1_HPP
-#define STAN_MATH_PRIM_FUN_INTERP1_HPP
-
-//#include <stan/math/prim/fun/sort_asc.hpp>
-
-using namespace std;
-namespace stan {
-    namespace math {
-
-        inline Eigen::VectorXd interp1(Eigen::VectorXd& xData, Eigen::VectorXd& yData, Eigen::VectorXd& xVector)
-        {
-            using stan::math::index_type_t;
-
-            Eigen::VectorXd yVals;
-            int size_x = xVector.size();
-            int size_xData = xData.size();
-
-            for(int j=0; j < size_x; j++) {
-
-                double x = xVector[j];
-                int i = 0;
-                if (x >= xVector[size_xData - 2])                 // special case: beyond right end
-                {
-                    i = size_xData - 2;
-                } else {
-                    while (x > xVector[i + 1])
-                        i++;                                   // find left end of interval for interpolation
-                }
-                double xL = xVector[i], yL = yData[i], xR = xVector[i + 1], yR = yData[i + 1]; // points on either side (unless beyond ends)
-                if (x < xL) yR = yL;                                                 // if beyond ends of array
-                if (x > xR) yL = yR;
-                double dydx = (yR - yL) / (xR - xL);                               // gradient
-                yVals[j] = yL + dydx * (x - xL);
-            }
-            return yVals;                                         // linear interpolation
-        }
-    }  // namespace math
-}  // namespace stan
-
-#endif
-
-*/
