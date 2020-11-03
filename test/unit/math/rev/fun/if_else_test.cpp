@@ -32,7 +32,7 @@ TEST(AgradRev, if_else_nan) {
   EXPECT_TRUE(std::isnan(if_else(false, a_v, nan).val()));
   EXPECT_TRUE(std::isnan(if_else(false, a_v, nan_v).val()));
 
-  EXPECT_TRUE(std::isnan(if_else(true, nan_v, 2.4).val()ㅈ));
+  EXPECT_TRUE(std::isnan(if_else(true, nan_v, 2.4).val()));
   EXPECT_TRUE(std::isnan(if_else(true, nan, a_v).val()));
   EXPECT_TRUE(std::isnan(if_else(true, nan_v, a_v).val()));
 
