@@ -7,19 +7,21 @@ using namespace std;
 namespace stan {
     namespace math {
         template <typename T>
-        inline std::vector<double> interp1(const std::vector<double>& xData, const std::vector<double>& yData, const std::vector<T>& xTest)
+        inline std::vector<T> interp1(const std::vector<double>& xData, const std::vector<double>& yData, const std::vector<T>& xTest)
         {
             using stan::math::index_type_t;
+            check_size_match("interp1", "x", xData.size(), "y", yData.size());
+            check_sorted("interp1", "x", xData);
             int N = xData.size();
             std::vector<double> dydx(N);
             int M = xTest.size();
-            std::vector<double> yVals(M);
+            std::vector<T> yVals(M);
 
             for (int i = 0; i < N - 1; i++){
                 dydx[i] = (yData[i+1] -  yData[i]) / (xData[i+1] - xData[i]);
             }
             for(int j = 0; j < M; j ++){
-                double x = xTest[j];
+                T x = xTest[j];
                 int i= 0;
                 while(x > xData[i]){
                     i++;
