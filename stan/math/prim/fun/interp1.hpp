@@ -7,7 +7,7 @@ using namespace std;
 namespace stan {
     namespace math {
         template <typename T>
-        inline std::vector<T> interp1(const std::vector<double>& xData, const std::vector<double>& yData, const std::vector<T>& xTest)
+        inline std::vector<T> interp1(const std::vector<double>& xData, const std::vector<double>& yData, const std::vector<T>& xTest, std::ostream* pstream__)
         {
             using stan::math::index_type_t;
             check_size_match("interp1", "x", xData.size(), "y", yData.size());
