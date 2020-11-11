@@ -11,7 +11,7 @@ namespace stan {
             check_size_match("interp1", "x", xData.size(), "y", yData.size());
             check_sorted("interp1", "x", xData);
             int N = xData.size();
-            std::vector<double> dydx(N);
+            std::vector<return_type_t<T1, T2, T3>> dydx(N);
             int M = xTest.size();
             std::vector<return_type_t<T1, T2, T3>> yVals(M);
 
