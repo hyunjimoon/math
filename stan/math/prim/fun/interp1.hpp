@@ -1,45 +1,36 @@
 #ifndef STAN_MATH_PRIM_FUN_INTERP1_HPP
 #define STAN_MATH_PRIM_FUN_INTERP1_HPP
 
-#include <stan/math/prim/meta.hpp>
 using namespace std;
 namespace stan {
     namespace math {
-    /**
-     * Return the one-dimensional interpolation of the second argument of points corresponding to the first argument.
-     * @tparam T_true type of the true argument
-     * @tparam T_false type of the false argument
-     * @param c Boolean condition value.
-     * @param y_true Value to return if condition is true.
-     * @param y_false Value to return if condition is false.
-     */
-    inline Eigen::VectorXd
-    interp1(const Eigen::VectorXd& xData, const Eigen::VectorXd& yData, const Eigen::VectorXd& xVector)
-    {
+        template <typename T1, typename T2, typename T3>
+        inline std::vector<return_type_t<T1, T2, T3>> interp1(const std::vector<T1>& xData, const std::vector<T2>& yData, const std::vector<T3>& xTest, std::ostream* pstream__ = nullptr)
+        {
+            using stan::math::index_type_t;
+            check_size_match("interp1", "x", xData.size(), "y", yData.size());
+            check_sorted("interp1", "x", xData);
+            int N = xData.size();
+            std::vector<return_type_t<T1, T2, T3>> dydx(N);
+            int M = xTest.size();
+            std::vector<return_type_t<T1, T2, T3>> yVals(M);
 
-        Eigen::VectorXd yVals;
-        int size_x = xData.size();
-        int size_xData = xData.size();
-
-        for(int j=0; j < size_x; j++) {
-            double x = xVector[j];
-            int i = 0;
-            if (x >= xData[size_xData - 2])                                           // special case: beyond right end
-            {
-                i = size_xData - 2;
-            } else {
-                while (x > xData[i + 1])
-                    i++;                                   // find left end of interval for interpolation
+            for (int i = 0; i < N - 1; i++){
+                dydx[i] = (yData[i+1] -  yData[i]) / (xData[i+1] - xData[i]);
             }
-            double xL = xData[i], yL = yData[i], xR = xData[i + 1], yR = yData[i + 1]; // points on either side (unless beyond ends)
-            if (x < xL) yR = yL;                                                 // if beyond ends of array
-            if (x > xR) yL = yR;
-            double dydx = (yR - yL) / (xR - xL);                               // gradient
-            yVals[j] = yL + dydx * (x - xL);
+            for(int j = 0; j < M; j ++){
+                T3 x = xTest[j];
+                int i= 0;
+                while(x > xData[i]){
+                    i++;
+                }
+                if(x < xData[0]){yVals[j] = yData[0];}
+                else if (x > xData[N-1]){yVals[j] = yData[N-1];}
+                else{yVals[j] = yData[i-1] + dydx[i-1] * (x - xData[i-1]);}
+            }
+            return yVals;
         }
-        return yVals;                                         // linear interpolation
     }
-    }  // namespace math
-}  // namespace stan
+}
 
 #endif

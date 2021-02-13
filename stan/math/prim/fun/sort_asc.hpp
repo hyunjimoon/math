@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace stan {
-namespace math {
+    namespace math {
 
 /**
  * Return the specified standard vector in ascending order.
@@ -18,12 +18,12 @@ namespace math {
  * @return Vector in ascending order.
  * @throw std::domain_error If any of the values are NaN.
  */
-template <typename T>
-inline std::vector<T> sort_asc(std::vector<T> xs) {
-  check_not_nan("sort_asc", "container argument", xs);
-  std::sort(xs.begin(), xs.end());
-  return xs;
-}
+        template <typename T>
+        inline std::vector<T> sort_asc(std::vector<T> xs) {
+            check_not_nan("sort_asc", "container argument", xs);
+            std::sort(xs.begin(), xs.end());
+            return xs;
+        }
 
 /**
  * Return the specified vector in ascending order.
@@ -34,15 +34,15 @@ inline std::vector<T> sort_asc(std::vector<T> xs) {
  * @return Vector in ascending order.
  * @throw std::domain_error If any of the values are NaN.
  */
-template <typename EigVec, require_eigen_vector_t<EigVec>* = nullptr>
-inline plain_type_t<EigVec> sort_asc(EigVec&& xs) {
-  plain_type_t<EigVec> x = std::forward<EigVec>(xs);
-  check_not_nan("sort_asc", "container argument", x);
-  std::sort(x.data(), x.data() + x.size());
-  return x;
-}
+        template <typename EigVec, require_eigen_vector_t<EigVec>* = nullptr>
+        inline plain_type_t<EigVec> sort_asc(EigVec&& xs) {
+            plain_type_t<EigVec> x = std::forward<EigVec>(xs);
+            check_not_nan("sort_asc", "container argument", x);
+            std::sort(x.data(), x.data() + x.size());
+            return x;
+        }
 
-}  // namespace math
+    }  // namespace math
 }  // namespace stan
 
 #endif
